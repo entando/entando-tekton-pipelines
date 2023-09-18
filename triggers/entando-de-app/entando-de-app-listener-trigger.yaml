@@ -37,7 +37,7 @@ spec:
               name: deploy-project
             params:
               - name: repo-url
-                value: ssh://git@rcdevopspp01.comune.roma.it:2222/entando/entando-de-app-7-1-roma.git
+                value: ssh://git@github.com:entando/app-engine.git
               - name: subdir-path
                 value: ""
               - name: branch-name
