@@ -36,7 +36,7 @@ spec:
               - name: ENTANDO_APP_NAME
                 value: "ent"
               - name: REPO_URL
-                value: git@github.com:cecchisandrone/entando-codemotion-bundle.git
+                value: git@github.com:entando/entando-simple-ms-bundle.git
               - name: SUBDIR_PATH
                 value: "simple-bundle"
               - name: BRANCH_NAME

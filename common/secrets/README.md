@@ -25,5 +25,5 @@ metadata:
   name: build-bot
 secrets:
   - name: ssh-key
-  - name: quay-registry-secret
+  - name: container-registry-secret
 ```

@@ -47,7 +47,7 @@ spec:
               - name: deployment-name
                 value: preprod-deployment
               - name: DOCKERFILE
-                value: ./Dockerfile.wildfly
+                value: ./Dockerfile.tomcat
               - name: BUILD_EXTRA_ARGS
                 value: ""
               - name: TLSVERIFY
