@@ -90,7 +90,7 @@ spec:
             - set
             - image
             - deployment/$(params.deployment-name)
-            - server-container=rcdevopspp01.comune.roma.it/pre-prod/entando-de-app-wildfly:$(tasks.fetch-source.results.commit)
+            - server-container=rcdevopspp01.comune.roma.it/pre-prod/entando-de-app-tomcat:$(tasks.fetch-source.results.commit)
       runAfter:
         - build-docker-image
       taskRef:

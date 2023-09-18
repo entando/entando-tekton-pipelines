@@ -8,7 +8,7 @@ spec:
       name: entando-dependency
     params:
       - name: repo-url
-        value: ssh://git@rcdevopspp01.comune.roma.it:2222/entando/entando-devs-roma.git
+        value: ssh://git@github.com:entando/entando-components.git
       - name: subdir-path
         value: ""
       - name: branch-name
