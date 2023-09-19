@@ -54,7 +54,13 @@ spec:
     - name: build-war
       params:
         - name: GOALS
-          value: ["clean", "package", "-DskipTests", "-Dlicense.skipDownloadLicenses"]
+          value:
+            [
+              "clean",
+              "package",
+              "-DskipTests",
+              "-Dlicense.skipDownloadLicenses",
+            ]
       runAfter:
         - fetch-source
       taskRef:
@@ -100,4 +106,3 @@ spec:
     - name: shared-workspace
     - name: local-maven-repo
     - name: ssh-creds
-

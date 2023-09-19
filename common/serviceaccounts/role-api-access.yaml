@@ -10,10 +10,17 @@ rules:
       - extentions
       - policy
       - rbac.authorization.k8s.io
+      - roles.rbac.authorization.k8s.io
       - entando.org
       - security.openshift.io
       - networking.k8s.io
+      - extensions
+      - route.openshift.io
     resources:
+      - roles
+      - rolebindings
+      - configmaps
+      - serviceaccounts
       - pods
       - deployments
       - services
@@ -22,4 +29,4 @@ rules:
       - ingresses
       - namespaces
       - secrets
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
+    verbs: ["*"]
