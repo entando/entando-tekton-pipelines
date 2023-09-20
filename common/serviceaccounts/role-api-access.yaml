@@ -24,8 +24,14 @@ rules:
       - pods
       - deployments
       - services
+      - entandoapppluginlinks
       - entandodebundles
+      - entandoapps
+      - entandodatabaseservices
+      - entandokeycloakservers
       - securitycontextconstraints
+      - entandoplugins
+      - providedcapabilities
       - ingresses
       - namespaces
       - secrets
