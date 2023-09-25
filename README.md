@@ -22,28 +22,27 @@
 ### Required steps
 
 1. Clone this repository (https://github.com/entando/entando-tekton-pipelines.git)
-2. checkout the branch `ocp-412`
+2. checkout the branch `main`
 3. Edit the `build-bot` secret, located at `./common/secrets` directory to match with your VCS's credentials
 4. Edit the `container-registry-secret`, located at `./common/secrets` directory to match with your docker registry's credentials
 5. Edit the `build-bot` service account, located at `./common/serviceaccounts` directory to match with your target namespace
-6. Edit the `role-api-access` role, located at `./common/serviceaccounts` directory to match with your target namespace
-7. Edit the `rolebinging-api-access` role-binding, located at `./common/serviceaccounts` directory to match with your target namespace
-8. Start applying all the Tekton resources:
+6. Edit the `cluster-rolebinging-api-access` role-binding, located at `./common/serviceaccounts` directory to match with your target namespace
+7. Start applying all the Tekton resources:
 
 ```bash
 # Set the correct OCP project
-oc project [your target project]
+kubectl project [your target project]
 
 # Install ClusterTasks
-oc apply -f ClusterTasks/
+kubectl apply -f ClusterTasks/
 
 # Install all the resources in common/**/** path
 for r in common/**/*.yaml; do
-  oc apply -f $r;
+  kubectl apply -f $r;
 done
 
 # Install the entando-bundle pipeline
-oc apply -f pipelines/
+kubectl apply -f pipelines/
 ```
 
 ### Optional Steps
@@ -59,7 +58,7 @@ In this repo you can find a working `pipelinerun` example with all the required 
 at `./pipelineruns` directory and is listed here:
 
 ```yaml
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   generateName: simple-bundle-
