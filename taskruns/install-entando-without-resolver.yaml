@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: install-entando-
+spec:
+  serviceAccountName: build-bot
+  params:
+    - name: entandoAppName
+      value: myapp
+    - name: ingressHostName
+      value: myapp.mydomain.com
+    - name: entandoVersion
+      value: v7.2.2
+  taskRef:
+    name: install-entando
