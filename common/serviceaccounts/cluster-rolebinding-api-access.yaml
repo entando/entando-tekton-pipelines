@@ -1,12 +1,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: api-access-role-binding
+  name: entando-api-access-role-binding
 subjects:
-- namespace: entando
-  kind: ServiceAccount
+- kind: ServiceAccount
   name: build-bot
+  namespace: entando
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: api-access
+  name: entando-api-access
