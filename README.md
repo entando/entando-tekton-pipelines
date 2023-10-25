@@ -17,6 +17,19 @@
 - A secret containing credentials to access to your docker registry to push or pull images
 - A secret containing credentials or ssh key to access to your VCS server
 
+## Install Tekton Operator
+
+1. Install operator
+```bash
+kubectl apply -f https://storage.googleapis.com/tekton-releases/operator/latest/release.yaml
+```
+
+2. Install Components (all)
+```bash
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/operator/main/config/crs/kubernetes/config/all/operator_v1alpha1_config_cr.yaml
+```
+
+
 ## Installation
 
 ### Required steps
@@ -93,6 +106,7 @@ spec:
       persistentVolumeClaim:
         claimName: maven-repo-pvc
 ```
+
 1. `ENTANDO_APP_NAME` parameter is needed to tell `ent` which is the Entando App name to point to retrieve the Keycloak token from.
 2. `REPO_URL` is the Bundle's repository which needs to be <u>specified in the SSH form</u>.
 3. `SUBDIR_PATH` parameter is used to download the bundle's repository under a specific directory. In this case `simple-bundle`.
