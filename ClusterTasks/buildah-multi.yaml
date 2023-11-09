@@ -78,6 +78,10 @@ spec:
     volumeMounts:
     - name: varlibcontainers
       mountPath: /var/lib/containers
+      securityContext:
+        capabilities:
+          add:
+            - SETFCAP
   - name: push
     securityContext:
       runAsUser: 1000
@@ -93,6 +97,10 @@ spec:
     volumeMounts:
     - name: varlibcontainers
       mountPath: /var/lib/containers
+      securityContext:
+        capabilities:
+          add:
+            - SETFCAP
 
   - name: digest-to-results
     securityContext:
