@@ -24,12 +24,20 @@ spec:
     - name: image
       default: gcr.io/cloud-builders/kubectl@sha256:8ab94be8b2b4f3d117f02d868b39540fddd225447abf4014f7ba4765cb39f753 #image is huge
       description: kubectl wrapper image # We need to update the default one for sure
+    - name: installEntandoClusterResources
+      default: "false"
+      description: Option to install the Entando's CRD on this cluster. The version will be the same as the one defined in the `entandoVersion` params 
   steps:
     - name: install-entando
       image: $(params.image)
       script: |
         #!/usr/bin/env bash
-        
+        set -x 
+        # install Entando's CRDs if the `installEntandoClusterResources` is set to true
+        if [ "$(params.installEntandoClusterResources)" = "true" ]; then
+          kubectl apply -f "https://raw.githubusercontent.com/entando/entando-releases/$(params.entandoVersion)/dist/ge-1-1-6/namespace-scoped-deployment/cluster-resources.yaml"
+        fi
+                
         # install namespace resources
         kubectl apply -f "https://raw.githubusercontent.com/entando/entando-releases/$(params.entandoVersion)/dist/ge-1-1-6/namespace-scoped-deployment/namespace-resources.yaml"
         echo "Wait for 30 seconds to have the Entando operator up and running..."
