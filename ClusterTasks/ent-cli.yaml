@@ -22,7 +22,7 @@ spec:
     - name: ENT_IMAGE
       type: string
       description: The image providing the ent binary that this Task runs.
-      default: docker.io/entando/ent:7.1.3_ocp-4.12_k8s_1.25
+      default: docker.io/entando/ent:v7.2.2_k8s_1_26_11_patch-https
     - name: NAMESPACE
       type: string
       description: The namespace of the cluster where the bundle should be installed.
@@ -63,6 +63,18 @@ spec:
 
       args:
         - "$(params.ARGS)"
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+
+# This part has been added to manage the auto-signed certificate for the internal docker registry
+# So we need to mount the /etc/ssl/certs directory
+#      volumeMounts:
+#        - name: ca-certs
+#          mountPath: /etc/ssl/certs/
+#          readOnly: true
+#      securityContext:
+#        runAsNonRoot: true
+#        runAsUser: 65532
+#        allowPrivilegeEscalation: true
+#  volumes:
+#    - name: ca-certs
+#      hostPath:
+#        path: /etc/ssl/certs

@@ -18,7 +18,7 @@ spec:
     - name: ENT_IMAGE
       type: string
       description: The image providing the ent binary that this Task runs.
-      default: registry.hub.docker.com/entando/ent:7.1.3_ocp-4.12_k8s_1.25
+      default: registry.hub.docker.com/entando/ent:7.2.2_k82_1_26_11_patch-https
     - name: NAMESPACE
       type: string
       description: The namespace of the cluster where the bundle should be installed.
@@ -66,16 +66,30 @@ spec:
           memory: 200Mi
       workingDir: $(workspaces.source.path)/$(params.CONTEXT_DIR)
       command: ["/bin/bash"]
-      args: ["-c", "ent bundle pack --org=$(params.DOCKER_ORG) --stdout"]
+      # git config --global safe.directory * We need it to tell git that entando's ent directory is safe
+      args: ["-c", "git config --global safe.directory *; ent bundle pack --org=$(params.DOCKER_ORG) --stdout"]
+      # enable the following line only for minikube
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+        runAsUser: 0
+        privileged: true
+      # Enable the following line if you are running on K8S
+      # securityContext:
+        # runAsNonRoot: true
+        # runAsUser: 65532
+        # allowPrivilegeEscalation: true
+
     - name: get-artifacts-and-data
       image: $(params.ENT_IMAGE)
       workingDir: $(workspaces.source.path)/$(params.CONTEXT_DIR)
+      # enable the following line only for minikube
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+        runAsUser: 0
+        privileged: true
+      # Enable the following line if you are running on K8S
+      # securityContext:
+        # runAsNonRoot: true
+        # runAsUser: 65532
+        # allowPrivilegeEscalation: true
       script: |
         #!/usr/bin/env bash
         set -eux
@@ -117,7 +131,7 @@ spec:
         
         if [ "${MICROSERVICES_NUMBER}" -gt 1 ]; then
           for ms in ${MICROSERVICES_LIST} ; do
-            MICROSERVICE_VERSION="$(mvn -s microservices/settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -f microservices/${ms}/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
+            MICROSERVICE_VERSION="$(mvn -f microservices/${ms}/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
             MICROSERVICE_VERSION_EXIT_CODE="$?"
             if [ "${MICROSERVICE_VERSION_EXIT_CODE}" != 0 ] ; then
               exit "${MICROSERVICE_VERSION_EXIT_CODE}"
@@ -165,6 +179,12 @@ spec:
 
       args:
         - "$(params.ARGS)"
+      # enable the following line only for minikube
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+         runAsUser: 0
+         privileged: true
+      # Enable the following line if you are running on K8S
+      # securityContext:
+        # runAsNonRoot: true
+        # runAsUser: 65532
+        # allowPrivilegeEscalation: true
