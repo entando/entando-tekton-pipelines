@@ -7,7 +7,6 @@
 - https://developer.entando.com/v7.2/tutorials/getting-started/openshift-install-by-operator.html
 - https://developer.entando.com/v7.2/tutorials/
 
-
 ## Prerequisites
 
 - In order to install these Tekton resources you need to be a member of the Cluster-Admin role.
