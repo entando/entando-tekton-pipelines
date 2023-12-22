@@ -7,7 +7,6 @@ rules:
       - ""
       - apps
       - autoscaling
-      - extentions
       - policy
       - rbac.authorization.k8s.io
       - roles.rbac.authorization.k8s.io
@@ -17,7 +16,10 @@ rules:
       - extensions
       - route.openshift.io
       - apiextensions.k8s.io
+      - tekton.dev
     resources:
+      - pipelineruns
+      - taskruns
       - customresourcedefinitions
       - clusterroles
       - clusterrolebindings
