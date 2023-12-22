@@ -1,7 +1,7 @@
-apiVersion: tekton.dev/v1beta1
-kind: ClusterTask
+apiVersion: tekton.dev/v1
+kind: Task
 metadata:
-  name: git-clone-ent
+  name: git-clone
   labels:
     app.kubernetes.io/version: "0.9"
   annotations:
@@ -115,6 +115,8 @@ spec:
       description: The precise URL that was fetched by this Task.
     - name: committer-date
       description: The epoch timestamp of the commit that was fetched by this Task.
+    - name: random-string
+      description: A random string that can be used as suffix for a docker image
   steps:
     - name: clone
       image: "$(params.gitInitImage)"
@@ -237,6 +239,8 @@ spec:
           exit "${EXIT_CODE}"
         fi
         RESULT_COMMITTER_DATE="$(git log -1 --pretty=%ct)"
+        RANDOM_STRING="$(tr -dc A-Za-z0-9 </dev/urandom | head -c 5)"
+        printf "%s" "${RANDOM_STRING}" > "$(results.random-string.path)"
         printf "%s" "${RESULT_COMMITTER_DATE}" > "$(results.committer-date.path)"
         printf "%s" "${RESULT_SHA}" > "$(results.commit.path)"
         printf "%s" "${PARAM_URL}" > "$(results.url.path)"
