@@ -19,4 +19,6 @@ spec:
     - name: ingressHostName
       value: myapp.my-domain.com
     - name: entandoVersion
-      value: v7.2.2
+      value: v7.3.0
+    - name: installEntandoClusterResources
+      value: "false"
