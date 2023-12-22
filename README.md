@@ -1,4 +1,4 @@
-# Entando Bundle Tekton pipeline for K8s >= 1.24
+# Entando Bundle Tekton pipeline for K8s >= 1.25
 
 ## Official documentation (READ before following these instructions)
 
