@@ -1,4 +1,4 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: ent-bundle-project
@@ -60,10 +60,10 @@ spec:
         - name: output
           workspace: shared-workspace
         - name: ssh-directory
-          workspace: ssh-creds
+          workspace: git-credentials
     - name: generate-manifests
       taskRef:
-        kind: ClusterTask
+        kind: Task
         name: ent
       params:
         - name: NAMESPACE
@@ -79,13 +79,11 @@ spec:
         - fetch-sources
     - name: build-bundle-image
       taskRef:
-        kind: ClusterTask
-        name: buildah-single
+        kind: Task
+        name: buildah
       params:
       - name: IMAGE
         value: $(params.DOCKER_REGISTRY)/$(params.DOCKER_ORG)/$(tasks.generate-manifests.results.bundleName):$(tasks.generate-manifests.results.bundleVersion)
-      - name: BUILDER_IMAGE
-        value: quay.io/buildah/stable:v1.18.0
       - name: STORAGE_DRIVER
         value: vfs
       - name: DOCKERFILE
@@ -108,13 +106,11 @@ spec:
           values:
             - "1"
       taskRef:
-        kind: ClusterTask
-        name: buildah-single
+        kind: Task
+        name: buildah
       params:
         - name: IMAGE
           value: $(params.DOCKER_REGISTRY)/$(params.DOCKER_ORG)/$(tasks.generate-manifests.results.microservicesList):$(tasks.generate-manifests.results.microserviceVersion)
-        - name: BUILDER_IMAGE
-          value: quay.io/buildah/stable:v1.18.0
         - name: STORAGE_DRIVER
           value: vfs
         - name: DOCKERFILE
@@ -137,13 +133,11 @@ spec:
             values:
                 - "1"
       taskRef:
-          kind: ClusterTask
+          kind: Task
           name: buildah-multi
       params:
           - name: IMAGE
             value: $(params.DOCKER_REGISTRY)/$(params.DOCKER_ORG)/
-          - name: BUILDER_IMAGE
-            value: quay.io/buildah/stable:v1.18.0
           - name: STORAGE_DRIVER
             value: vfs
           - name: DOCKERFILE
@@ -173,10 +167,12 @@ spec:
         - name: SCRIPT
           value: |
             ent config --default --set ENTANDO_NAMESPACE $(params.NAMESPACE)
+            ent appname $(params.ENTANDO_APP_NAME)
+            # Enable this if the TLS is terminated externally
+            # ent config --set FORCE_URL_SCHEME https
             ent bundle generate-cr -i $(params.DOCKER_REGISTRY)/$(params.DOCKER_ORG)/$(tasks.generate-manifests.results.bundleName) | kubectl -n $(params.NAMESPACE) apply -f -
-            ent appname $(params.ENTANDO_APP_NAME) 
             ent config --default --set ENTANDO_CLI_DEFAULT_DOCKER_REGISTRY $(params.DOCKER_REGISTRY) --stdout
-            ent bundle install --conflict-strategy OVERRIDE --stdout
+            ent bundle install --conflict-strategy=OVERRIDE --stdout
         - name: ARGS
           value:
             - ""
@@ -192,7 +188,7 @@ spec:
       runAfter:
         - "build-ms-image"
       taskRef:
-        kind: ClusterTask
+        kind: Task
         name: ent-cli
     - name: deploy-and-install-multi
       when:
@@ -206,10 +202,12 @@ spec:
         - name: SCRIPT
           value: |
             ent config --default --set ENTANDO_NAMESPACE $(params.NAMESPACE)
+            ent appname $(params.ENTANDO_APP_NAME)
+            # Enable this if the TLS is terminated externally
+            # ent config --set FORCE_URL_SCHEME https
             ent bundle generate-cr -i $(params.DOCKER_REGISTRY)/$(params.DOCKER_ORG)/$(tasks.generate-manifests.results.bundleName) | kubectl -n $(params.NAMESPACE) apply -f -
-            ent appname $(params.ENTANDO_APP_NAME) 
             ent config --default --set ENTANDO_CLI_DEFAULT_DOCKER_REGISTRY $(params.DOCKER_REGISTRY) --stdout
-            ent bundle install --conflict-strategy OVERRIDE --stdout
+            ent bundle install --conflict-strategy=OVERRIDE --stdout
         - name: ARGS
           value:
             - ""
@@ -225,9 +223,19 @@ spec:
       runAfter:
         - "build-ms-images"
       taskRef:
-        kind: ClusterTask
+        kind: Task
         name: ent-cli
   workspaces:
     - name: shared-workspace
     - name: local-maven-repo
-    - name: ssh-creds
+    - name: git-credentials
+
+  finally:
+    - name : delete-previous-jobs
+      params:
+        - name: ARGS
+          value:
+            - pr delete --all -f
+      taskRef:
+        kind: Task
+        name: tkn
