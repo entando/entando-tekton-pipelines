@@ -1,5 +1,6 @@
-apiVersion: tekton.dev/v1beta1
-kind: ClusterTask
+---
+apiVersion: tekton.dev/v1
+kind: Task
 metadata:
   name: ent
 spec:
@@ -69,27 +70,27 @@ spec:
       # git config --global safe.directory * We need it to tell git that entando's ent directory is safe
       args: ["-c", "git config --global safe.directory *; ent bundle pack --org=$(params.DOCKER_ORG) --stdout"]
       # enable the following line only for minikube
-      securityContext:
-        runAsUser: 0
-        privileged: true
+#      securityContext:
+#        runAsUser: 0
+#        privileged: true
       # Enable the following line if you are running on K8S
-      # securityContext:
-        # runAsNonRoot: true
-        # runAsUser: 65532
-        # allowPrivilegeEscalation: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        allowPrivilegeEscalation: true
 
     - name: get-artifacts-and-data
       image: $(params.ENT_IMAGE)
       workingDir: $(workspaces.source.path)/$(params.CONTEXT_DIR)
       # enable the following line only for minikube
-      securityContext:
-        runAsUser: 0
-        privileged: true
+#      securityContext:
+#        runAsUser: 0
+#        privileged: true
       # Enable the following line if you are running on K8S
-      # securityContext:
-        # runAsNonRoot: true
-        # runAsUser: 65532
-        # allowPrivilegeEscalation: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        allowPrivilegeEscalation: true
       script: |
         #!/usr/bin/env bash
         set -eux
@@ -180,11 +181,11 @@ spec:
       args:
         - "$(params.ARGS)"
       # enable the following line only for minikube
-      securityContext:
-         runAsUser: 0
-         privileged: true
+#      securityContext:
+#         runAsUser: 0
+#         privileged: true
       # Enable the following line if you are running on K8S
-      # securityContext:
-        # runAsNonRoot: true
-        # runAsUser: 65532
-        # allowPrivilegeEscalation: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        allowPrivilegeEscalation: true
