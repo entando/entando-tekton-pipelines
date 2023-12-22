@@ -1,3 +1,4 @@
+---
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
@@ -41,4 +42,3 @@ spec:
         
         # Delete k8s-service
         kubectl delete service --all
-        

@@ -1,3 +1,4 @@
+---
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
@@ -83,4 +84,3 @@ spec:
           frontEndUrl: >-
             $(params.keycloakUrl)
         EOF
-        
